@@ -1,82 +1,542 @@
-#shorts-overlay {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 320px;
-  height: 560px;
-  background: rgba(0, 0, 0, 0.92);
+/* SF Pro Display Heavy Font */
+@font-face {
+  font-family: 'SF Pro Display';
+  src: local('SF Pro Display Heavy'), local('SFProDisplay-Heavy');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Overlay - Match ChatGPT's native dark theme */
+#tweet-overlay {
+  position: fixed !important;
+  max-height: 500px;
+  background: #2f2f2f !important;
+  color: #ececec;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28), 0 0 1px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  z-index: 999999;
-  display: flex;
+  display: none; /* Will be overridden by inline style */
+  z-index: 10000 !important;
+  font-family: 'Söhne', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 400;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(10px);
   flex-direction: column;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box !important;
 }
 
-#shorts-header {
-  color: #fff;
-  font-size: 14px;
-  text-align: center;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.08);
-  user-select: none;
+#tweet-overlay.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-#shorts-container {
-  flex: 1;
+/* Minimized pill state */
+#tweet-overlay.minimized {
+  height: auto !important;
+  width: auto !important;
+  min-width: 260px;
+  border-radius: 16px;
+  max-height: none !important;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#tweet-overlay.minimized .tweet-overlay-container {
+  display: none !important;
+}
+
+#tweet-overlay.minimized .tweet-overlay-header {
+  display: flex !important;
+  visibility: visible !important;
+}
+
+#tweet-overlay.minimized .tweet-overlay-title {
+  font-size: 13px;
+  padding: 12px 18px;
+}
+
+/* Ensure overlay is visible when shown */
+#tweet-overlay.show,
+#tweet-overlay[style*="display: flex"],
+#tweet-overlay[style*="display:flex"] {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Navbar styles - Lighter grey shades: pill-shaped buttons */
+.tweet-navbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
   position: relative;
-  background: #000;
+  flex: 0 0 auto;
 }
 
-.shorts-slide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.shorts-iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-  background: #000;
-}
-
-#shorts-prev, #shorts-next, #shorts-close {
-  position: absolute;
-  top: 10px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+.tweet-navbar-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
   border: none;
-  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 20px;
   cursor: pointer;
-  font-size: 18px;
-  border-radius: 6px;
-  backdrop-filter: blur(2px);
+  transition: all 0.15s ease;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  white-space: nowrap;
+  z-index: 1;
 }
 
-#shorts-prev { left: 10px; }
-#shorts-next { right: 10px; }
-#shorts-close { top: 10px; right: 50%; transform: translateX(50%); }
-
-#shorts-prev:hover, #shorts-next:hover, #shorts-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+.tweet-navbar-tab[aria-selected="true"] {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.18);
+  font-weight: 700;
 }
 
-#shorts-prev:focus, #shorts-next:focus, #shorts-close:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.4);
-  outline-offset: 2px;
+.tweet-navbar-tab .tab-icon {
+  font-size: 14px;
 }
 
-@media (max-width: 480px) {
-  #shorts-overlay {
-    width: 280px;
-    height: 500px;
-    bottom: 16px;
-    right: 16px;
+.tweet-navbar-tab .tab-label {
+  font-size: 13px;
+}
+
+/* Header - Match HTML design */
+.tweet-overlay-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  gap: 12px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 
+.tweet-overlay-title {
+  font-weight: 900;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
 
+.tweet-overlay-title span:first-child {
+  font-size: 16px;
+}
+
+/* Close button */
+.tweet-overlay-close {
+  all: unset;
+  cursor: pointer;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.tweet-overlay-close:hover {
+  color: rgba(255, 255, 255, 1);
+  background: #303030;
+}
+
+.tweet-overlay-close:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* Minimize button */
+.tweet-overlay-minimize {
+  all: unset;
+  cursor: pointer;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.tweet-overlay-minimize:hover {
+  color: rgba(255, 255, 255, 1);
+  background: #303030;
+}
+
+.tweet-overlay-minimize:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* Container - Match ChatGPT theme */
+.tweet-overlay-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin: 12px 16px;
+  padding: 16px;
+  min-height: 200px;
+}
+
+.tweet-overlay-content {
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Loading state */
+.tweet-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  gap: 16px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.tweet-loading::before {
+  content: '';
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tweet-loading span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* Error state */
+.tweet-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+  min-height: 150px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  margin: 8px;
+}
+
+.tweet-error-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.tweet-error-message {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+}
+
+.tweet-error-retry {
+  all: unset;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+  transition: all 0.2s;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+.tweet-error-retry:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 1);
+}
+
+.tweet-error-retry:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.tweet-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  text-align: center;
+  min-height: 150px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  margin: 8px;
+}
+
+.tweet-empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+
+.tweet-empty-message {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+}
+
+/* News Card - Match ChatGPT style */
+.tweet-card {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  animation: fadeUp 0.3s ease forwards;
+  opacity: 0;
+  transform: translateY(4px);
+  font-family: 'Söhne', 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth tab content transitions */
+.tweet-overlay-content {
+  transition: opacity 0.2s ease;
+}
+
+.tweet-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.tweet-card:active {
+  transform: translateY(0);
+}
+
+.tweet-card:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.2);
+  outline-offset: 2px;
+}
+
+/* Card header */
+.tweet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.tweet-author-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.tweet-author {
+  font-weight: 900;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.95);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+.tweet-handle {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 900;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+.tweet-timestamp {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 900;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Card text */
+.tweet-text {
+  line-height: 1.45;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.95);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-weight: 900;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* News title (if split) */
+.tweet-title {
+  font-weight: 900;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 6px;
+  line-height: 1.4;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+.tweet-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.45;
+  font-weight: 900;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Scrollbar */
+.tweet-overlay-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tweet-overlay-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tweet-overlay-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.tweet-overlay-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Genie animation states */
+#tweet-overlay.genie-minimizing,
+#tweet-overlay.genie-expanding {
+  overflow: hidden;
+}
+
+#tweet-overlay.genie-minimized {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.genie-bubble {
+  animation: bobble 3s ease-in-out infinite;
+}
+
+@keyframes bobble {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #tweet-overlay,
+  .tweet-card,
+  .tweet-overlay-close,
+  .tweet-overlay-minimize,
+  .tweet-error-retry,
+  .tweet-loading::before,
+  .genie-bubble {
+    transition: none;
+    animation: none;
+  }
+
+  .tweet-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .tweet-card:hover {
+    transform: none;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  #tweet-overlay {
+    width: calc(100vw - 32px);
+    max-width: 380px;
+    bottom: 16px;
+    right: 16px;
+    left: auto;
+  }
+
+  #tweet-overlay.minimized {
+    width: auto;
+  }
+}
